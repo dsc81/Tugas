@@ -48,6 +48,13 @@ exchanges = [
 findexchange :: MataU -> MataU -> Maybe Float 
 findexchange dari jadi = lookup (dari, jadi) exchanges
 
+
+-- This is to create the log file.
+logger :: MataU -> MataU -> Float -> Float -> IO ()
+logger dari jadi amount result = appendFile "log.txt" $
+ "Current currency:" ++ show dari ++ ", Target currency:" ++ show jadi ++
+ ", Initial amount:" ++ show amount ++ ", Resulting amount: " ++ show result ++ "\n"
+
 -- This is the function start.  
 main :: IO()
 main = do 
@@ -68,9 +75,11 @@ main = do
             Nothing -> putStrLn "Not available!"
             (Just jadi) -> case (findexchange dari jadi) of 
               Nothing -> putStrLn "exchange rate not available"
-              (Just rate) -> putStrLn $ 
-                "Result: " ++ (show dari) ++ jumlah ++ " "  ++ "is equal to " ++ (show jadi) ++ " " ++ (show (rate * n)) 
-          
+              (Just rate) -> do
+                logger dari jadi n (rate * n) 
+                putStrLn $ 
+                 "Result: " ++ (show dari) ++ jumlah ++ " "  ++ "is equal to " ++ (show jadi) ++ " " ++ (show (rate * n)) 
+
       
 
       
